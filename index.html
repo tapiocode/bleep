@@ -1,0 +1,179 @@
+<!--
+ Copyright (c) 2022 tapiocode
+ https://github.com/tapiocode
+ MIT License
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Bleep</title>
+    <link rel="stylesheet" href="style.css" />
+    <script type="module" src="index.js"></script>
+  </head>
+  <body>
+    <div class="container-wrapper">
+      <div class="nav-container">
+        <div class="sticky">
+          <h1>Bleep</h1>
+          <small>Morse Code App</small>
+          <nav class="menu">
+            <ul>
+              <li><a href="?page=home"><span>Home</span></a></li>
+              <li><a href="?page=exercise"><span>Exercise</span></a></li>
+              <li><a href="?page=characters"><span>Characters</span></a></li>
+              <li><a href="?page=transmitter"><span>Transmitter</span></a></li>
+              <li><a href="?page=settings"><span>Settings</span></a></li>
+            </ul>
+          </nav>
+          <div class="footnote">
+            <hr />
+            <div>&copy; 2022 <a href="https://github.com/tapiocode">tapiocode</a></div>
+            <span>MIT License</span>
+          </div>
+        </div>
+      </div>
+      <div class="content-container">
+        <div class="transmitting-outputs sticky">
+          <div>
+            <div class="flashing-light__wrapper">
+              <div class="flashing-light"></div>
+              <div class="flashing-light flashing-light__light"></div>
+            </div>
+          </div>
+          <div class="transmitting-indicator">
+            <span id="currentChar"></span>
+          </div>
+          <button class="stop-button" onclick="clickStop()">Stop</button>
+        </div>
+
+        <div id="page-reset">
+          <p>App has been reset.</p>
+          <p><a href="?page=home">Continue Home</a></p>
+        </div>
+
+        <div id="page-home">
+          <h2>Home</h2>
+          <p>Lightweight app for playing around with Morse code.</p>
+          <h3>Features</h3>
+          <ul>
+            <li>Configurable audio and visual transmitter</li>
+            <li>Morse code reception practice</li>
+            <li>Character button chart</li>
+            <li>And more...</li>
+          </ul>
+
+          <h3>Implementation notes</h3>
+          <p>Mostly interesting for developers.</p>
+          <ul>
+            <li>Pure JS/CSS implementation: No frameworks, libraries</li>
+            <li>Dark/Light theme based on user preferences</li>
+            <li>User's settings saved automatically in <samp>LocalStorage</samp></li>
+            <li>Sounds produced using <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API">Web Audio API</a></li>
+          </ul>
+        </div>
+
+        <div id="page-exercise">
+          <h2>Exercise</h2>
+
+          <form name="exercise">
+            <fieldset>
+              <legend>Parameters</legend>
+              <div class="parameter-fields">
+                <label for="numberOfWords">Number of words</label>
+                <div>
+                  <input id="numberOfWords" name="numberOfWords" type="range" min="1" max="30" />
+                  <output for="numberOfWords"></output>
+                </div>
+                <label for="wordLengthBase">Word length</label>
+                <div>
+                  <input id="wordLengthBase" name="wordLengthBase" type="range" min="1" max="10" />
+                  <output for="wordLengthBase"></output>&nbsp;char(s)
+                </div>
+                <label for="wordLengthVar">Word length variance</label>
+                <div>
+                  <input id="wordLengthVar" name="wordLengthVar" type="range" min="0" max="10" />
+                  &plusmn;&nbsp;<output for="wordLengthVar"></output>&nbsp;char(s)
+                </div>
+              </div>
+              <button type="button" onclick="clickResetDefaultParams('exercise')">Reset to defaults</button>
+            </fieldset>
+          </form>
+          <button onclick="startExercise()">Start</button>
+          <textarea id="exerciseInput" placeholder="Type in received character(s)"></textarea>
+          <div id="exerciseCheck" style="margin: 1rem 0; display: none">
+            <button onclick="checkExercise()">Check result</button>
+            <pre id="exerciseWordsInput"></pre>
+            <pre id="exerciseWordsOutput"></pre>
+            <pre id="exerciseResult"></pre>
+          </div>
+        </div>
+
+        <div id="page-transmitter">
+          <h2>Transmitter</h2>
+          <textarea id="userInput" placeholder="Enter text to be transmitted"></textarea>
+          <button onclick="clickTransmitString()">Transmit</button>
+        </div>
+
+        <div id="page-characters">
+          <h2>Characters</h2>
+          <div style="margin: 1rem 0; display: flex; flex-direction: column">
+            <label for="singleCharPlayer">Character player</label>
+            <input id="singleCharPlayer" type="text" style="width: 11rem; margin-top: .3rem" placeholder="Type a character" />
+          </div>
+          <div id="characters"></div>
+        </div>
+
+        <div id="page-settings">
+          <h2>Settings</h2>
+          <form name="audio">
+            <fieldset>
+              <legend>Audio</legend>
+              <div class="parameter-fields">
+                <label for="unitDurationMs">Unit duration</label>
+                <div>
+                  <input id="unitDurationMs" name="unitDurationMs" type="range" min="10" max="200" step="10" />
+                  <output for="unitDurationMs"></output>&nbsp;ms
+                </div>
+                <label for="frequency">Tone</label>
+                <div>
+                  <input id="frequency" name="frequency" type="range" min="100" max="1500" step="10" />
+                  <output for="frequency"></output>&nbsp;Hz
+                </div>
+                <label for="volume">Volume</label>
+                <div>
+                  <input id="volume" name="volume" type="range" min="5" max="100" step="5" />
+                  <output for="volume"></output>&nbsp;%
+                </div>
+              </div>
+              <button type="button" onclick="clickResetDefaultParams('audio')">Reset to defaults</button>
+              <button type="button" onclick="clickPlay('test test test test test')">Test audio</button>
+            </fieldset>
+          </form>
+          <form name="playback">
+            <fieldset style="margin-top: 1rem">
+              <legend>Playback</legend>
+              <div class="parameter-fields">
+                <label for="startDelay">Start delay</label>
+                <div>
+                  <input id="startDelay" name="startDelay" type="range" min="0" max="5000" step="100" />
+                  <output for="startDelay"></output>&nbsp;s
+                </div>
+              </div>
+              <button type="button" onclick="clickResetDefaultParams('playback')">Reset to defaults</button>
+            </fieldset>
+          </form>
+          <fieldset>
+            <legend>App</legend>
+            <button style="margin-top: .5rem" type="button" onclick="resetApp()">Reset app</button>
+            <div>
+              <small>Wipes stored data and resets all settings</small>
+            </div>
+          </fieldset>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </body>
+</html>

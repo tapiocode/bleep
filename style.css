@@ -1,0 +1,279 @@
+
+ :root {
+  --flashing-light-dimension: 3rem;
+  --transmitting-progress: 0.0;
+
+  --border-radius: .4rem;
+  --breakpoint-tablet: 800px;
+
+  --links: #1851a6;
+  --background-body: #f4f4f4;
+  --background-main: #f1f1f1;
+  --text: #1c1d1e;
+  --border: #a8a8a8;
+  --hover-highlight: #b8b8b8;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --links: #7ea8e7;
+    --background-body: #0f0f0f;
+    --background-main: #222;
+    --text: #efefef;
+    --border: #444;
+    --hover-highlight: #888;
+  }
+}
+
+*,
+::after,
+::before {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  font-size: 16px;
+  color: var(--text);
+  background: var(--background-body);
+}
+
+ul {
+  padding-left: 1rem;
+  display: flex;
+  gap: .5rem;
+  flex-direction: column;
+}
+
+hr {
+  border-width: 1px 0 0;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 300;
+}
+
+h1 {
+  margin: 0;
+}
+
+h2 {
+  margin: 1rem 0 1.5rem;
+}
+
+h3 {
+  margin: 2.4rem 0 0.8rem;
+}
+
+a {
+  color: var(--links);
+}
+
+p {
+  line-height: 1.5;
+}
+
+fieldset {
+  border: 2px solid var(--border);
+  padding: .6rem .5rem;
+  margin: 0;
+  border-radius: var(--border-radius);
+}
+legend {
+  margin-left: -0.1rem;
+}
+
+label {
+  font-size: .9rem;
+}
+
+textarea {
+  width: 100%;
+  height: 5rem;
+  margin: 1rem 0 .5rem;
+}
+
+input[type="text"],
+textarea,
+button {
+  border: 2px solid var(--border);
+  padding: .3rem .5rem;
+  font-size: 1.2rem;
+  border-radius: var(--border-radius);
+}
+
+input:hover,
+textarea:hover,
+select:hover {
+  border-color: var(--hover-highlight);
+}
+
+button {
+  margin: 1rem 0 .5rem;
+  user-select: none;
+}
+
+[id^="page-"]:not(.active) {
+  display: none;
+}
+
+.sticky {
+  position: sticky;
+  top: 0;
+}
+
+.nav-container {
+  width: 9rem;
+}
+
+.menu ul {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-right: 1rem;
+  padding-left: 0;
+  letter-spacing: .05rem;
+}
+.menu li {
+  list-style: none;
+}
+.menu a {
+  text-decoration: none;
+}
+.menu a:not(.active) span {
+  text-decoration: underline;
+}
+.menu a:before {
+  content: '▷';
+  margin-right: .3rem;
+}
+.menu a.active {
+  color: var(--text);
+}
+.menu a.active:before {
+  content: '▶';
+}
+
+.footnote {
+  color: #888;
+  display: inline-block;
+  font-size: .7rem;
+  line-height: 1.5;
+}
+
+.container-wrapper {
+  display: flex;
+  margin: 2rem auto;
+  padding: 0 .5rem;
+
+  width: 100%;
+  max-width: 1024px;
+}
+
+.content-container {
+  max-width: 600px;
+  width: 100%;
+}
+
+.transmitting-outputs {
+  align-items: center;
+  background-color: var(--background-body);
+  border-bottom: 1px solid var(--text);
+  display: flex;
+  gap: .5rem;
+  padding-top: .3rem;
+  width: 100%;
+}
+
+.transmitting-indicator {
+  line-height: var(--flashing-light-dimension);
+  text-align: center;
+  font-family: monospace;
+  font-size: calc(var(--flashing-light-dimension) * .6);
+  visibility: hidden;
+  padding: 0 .5rem;
+  min-width: 3rem;
+}
+.is-transmitting .transmitting-indicator {
+  visibility: visible;
+}
+.is-transmitting button:not(.stop-button) {
+  cursor: wait;
+}
+.stop-button {
+  visibility: hidden;
+}
+.is-transmitting .stop-button {
+  visibility: visible;
+}
+
+.flashing-light__wrapper {
+  height: var(--flashing-light-dimension);
+  width: var(--flashing-light-dimension);
+  position: relative;
+}
+.flashing-light__wrapper::after {
+  content: '';
+  display: block;
+  height: 3px;
+  background-color: var(--links);
+  position: relative;
+  top: -.5rem;
+  width: calc(var(--transmitting-progress) * 100%);
+}
+.flashing-light {
+  background-color: rgb(67, 63, 63);
+  border: 2px solid var(--border);
+  border-radius: var(--flashing-light-dimension);
+  display: inline-block;
+  height: 100%;
+  position: absolute;
+  transition: opacity .1s;
+  width: 100%;
+}
+.flashing-light__light {
+  background-color: rgb(239, 242, 200);
+  opacity: 0;
+}
+.is-beeping .flashing-light__light {
+  opacity: 1;
+}
+.is-starting .flashing-light__light {
+  opacity: 0.5;
+}
+
+.char-buttons {
+  display: grid;
+  grid-template-columns: repeat(6, auto);
+  gap: .5rem;
+  max-width: 22rem;
+}
+.char-button {
+  width: 2.3rem;
+  height: 2.3rem;
+  margin: 0;
+}
+
+.parameter-fields {
+  display: grid;
+  grid-template-columns: 33% 1fr;
+  gap: 1rem;
+}
+.parameter-fields input {
+  margin-right: .5rem
+}
+.parameter-fields > div {
+  display: flex;
+  align-items: center;
+}
+
+@media screen and (min-width: 800px) {
+  .char-buttons {
+    display: grid;
+    grid-template-columns: repeat(10, auto);
+    gap: 1rem;
+  }
+}
